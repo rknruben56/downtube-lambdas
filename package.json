@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "aws-sdk": "^2.810.0",
+    "request": "^2.88.2",
+    "tempy": "^1.0.0"
+  }
+}
