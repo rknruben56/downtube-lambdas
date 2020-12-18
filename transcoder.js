@@ -15,7 +15,7 @@ exports.handler = async (event, context, callback) => {
   const { mp3Key, url } = event;
   const filename = event.filename || path.basename(mp3Key);
   const logKey = event.logKey || `${mp3Key}.log`;
-  const s3Bucket = event.s3Bucket || 'downtube-downloader';
+  const s3Bucket = event.s3Bucket || 'downtube-bucket';
 
   // Create temp I/O filenames
   const inputFilename = tempy.file();

@@ -1,20 +1,22 @@
 const AWS = require('aws-sdk');
 const express = require('express');
+const nunjucks = require('nunjucks');
 const ytdl = require('ytdl-core');
 
 // Global vars
 const apiStage = 'v1';
 const transcoderFunctionName = 'DownTubeTranscoderFunction';
-const s3Bucket = 'downtube-downloader';
+const s3Bucket = 'downtube-bucket';
 const codec = 'audio/webm; codecs="opus"';
 
 // AWS stuff
-const lambda = new AWS.Lambda({ region: 'us-east-1'});
+const lambda = new AWS.Lambda({ region: 'us-east-2' });
 const s3 = new AWS.S3({ signatureVersion: 'v4' });
 
 // Express stuff
 const app = express();
 const router = express.Router();
+nunjucks.configure('.', { express: app });
 
 router.get('/transcode/:videoId', async (req, res) => {
   const timestamp = Date.now().toString();
@@ -31,7 +33,7 @@ router.get('/transcode/:videoId', async (req, res) => {
     // Convert to mp3
     await callTranscodeLambda(params);
     res.status(200).send(JSON.stringify({ logKey: params.logKey, mp3Key: params.mp3Key }));
-  } catch(error) {
+  } catch (error) {
     res.status(500).send(`Something went wrong: ${error.message}`);
   }
 });
@@ -51,8 +53,19 @@ router.get('/signed-url/:mp3Key', (req, res) => {
   })
 });
 
+router.get('/index', (req, res) => {
+  res.render('index.html', { apiStage });
+});
+
+router.get('/download/:videoId', (req, res) => {
+  const videoId = decodeURIComponent(req.params.videoId);
+  const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+  res.render('download.html', { apiStage, videoId, videoUrl });
+});
+
 getTranscodeParams = (videoInfo, timestamp) => {
-  const title = videoInfo.videoDetails.title;
+  let fullTitle = videoInfo.videoDetails.title;
+  const title = fullTitle.replace('.', '');
   const format = videoInfo.formats
     .filter(format => format.mimeType == codec)[0];
 

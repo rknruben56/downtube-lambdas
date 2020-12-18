@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <title>DownTube</title>
+    <link rel="stylesheet"
+      href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>DownTube</h1>
+      <h2>Steps to download mp3:</h2>
+      <ul>
+        <li>Find a song you like on YouTube</li>
+        <li>Copy the URL</li>
+        <li>Paste the URL in the text box (right click works!)</li>
+        <li>Click download</li>
+        <li>Wait for it to finish converting to an mp3</li>
+        <li>You should get a popup saying if you want to save it. If not, it's in your Downloads folder</li>
+        <li>If you click on the mp3 file, it should automatically add to iTunes</li>
+        <li>Enjoy! Love, Junior</li>
+      </ul>
+      <div id="urlInput" class="form-group">
+        <label for="url">YouTube URL</label>
+        <input id="url" name="url" class="form-control">
+      </div>
+      <button class="btn btn-lg" onclick="startDownload()">Download</button>
+    </div>
+    <script type="text/javascript">
+      const validUrlRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//;
+      const inputElement = document.getElementById("urlInput");
+      const currentLocation = window.location.toString().replace('/index', '');
+      const apiStagePrefix = '/{{ apiStage }}/';
+      const apiPrefix = currentLocation.slice(0,
+        currentLocation.indexOf(apiStagePrefix) + apiStagePrefix.length);
+     
+      function startDownload() {
+        const url = document.getElementById("url").value;
+        if (validUrlRegex.test(url)) {
+          const videoId = url.match(/v=([^&]*)/)[1];
+          window.location = `${currentLocation}/download/${videoId}`;
+        } else {
+          errorElement = document.createElement("p");
+          errorText = document.createTextNode("Please enter a valid url");
+          errorElement.appendChild(errorText);
+          inputElement.appendChild(errorElement);
+        }
+      }
+    </script>
+  </body>
+</html>
