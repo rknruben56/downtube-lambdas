@@ -21,10 +21,9 @@ exports.handler = async (event, context, callback) => {
   const inputFilename = tempy.file();
   const mp3Filename = tempy.file({ extension: 'mp3' });
 
-  await downloadSourceFile(url, inputFilename);
-  const logContent = transcode(inputFilename, mp3Filename);
-
   try {
+    await downloadSourceFile(url, inputFilename);
+    const logContent = transcode(inputFilename, mp3Filename);
     await uploadMp3ToS3(mp3Filename, s3Bucket, mp3Key, filename, logKey, logContent);
   } catch (err) {
     console.log(err);
@@ -79,7 +78,7 @@ uploadMp3ToS3 = (mp3Filename, s3Bucket, mp3Key, filename, logKey, logContent) =>
           ContentType: 'text/plain',
           ContentDisposition: `inline; filename="${logFileName.repalce('"', '\'')}"`,
           Key: logKey,
-        }, resolve);
+        }, error => error ? revoke(error) : resolve());
       }
     })
   });
