@@ -42,6 +42,7 @@
           window.location = `${currentLocation}/download/${videoId}`;
         } else {
           errorElement = document.createElement("p");
+          errorElement.className = "text-danger";
           errorText = document.createTextNode("Please enter a valid url");
           errorElement.appendChild(errorText);
           inputElement.appendChild(errorElement);

@@ -34,6 +34,7 @@
           </div>
         </div>
       </div>
+      <button class="btn btn-lg" onclick="goBack()">Go Back</button>
     </div>
     <script type="text/javascript">
       // Build API urls
@@ -80,6 +81,10 @@
             });
         };
         poll();
+      };
+
+      const goBack = () => {
+        window.location = `${apiPrefix}index`;
       };
 
       fetch(apiTranscodeUrl)
