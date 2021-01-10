@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const express = require('express');
 const nunjucks = require('nunjucks');
 const ytdl = require('ytdl-core');
+const cors = require('cors');
 
 // Global vars
 const apiStage = 'v1';
@@ -15,6 +16,7 @@ const s3 = new AWS.S3({ signatureVersion: 'v4' });
 
 // Express stuff
 const app = express();
+app.use(cors());
 const router = express.Router();
 nunjucks.configure('.', { express: app });
 
